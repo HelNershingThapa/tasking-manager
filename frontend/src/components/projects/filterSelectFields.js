@@ -11,6 +11,7 @@ import messages from './messages';
 import { CalendarIcon } from '../svgIcons';
 
 export const ProjectFilterSelect = ({
+  isMulti,
   fieldsetName,
   fieldsetStyle,
   titleStyle,
@@ -39,6 +40,7 @@ export const ProjectFilterSelect = ({
       ) : null}
       <ReactPlaceholder type="text" rows={2} ready={!state.isLoading}>
         <TagFilterPickerAutocomplete
+          isMulti={isMulti}
           fieldsetTitle={fieldsetTitle}
           defaultSelectedItem={fieldsetTitlePlural}
           fieldsetName={fieldsetName}
@@ -167,6 +169,7 @@ export const DateFilterPicker = ({
 defaultSelectedItem gets appended to top of list as an option for reset
 */
 export const TagFilterPickerAutocomplete = ({
+  isMulti = false,
   tagOptionsFromAPI,
   tagOptionsFromAPI: { tags: tagOptions },
   fieldsetTitle,
@@ -199,7 +202,13 @@ export const TagFilterPickerAutocomplete = ({
     const value = getValue(change);
     const isAllTags = change && value === defaultSelectedItem;
     /* should we encodeURIComponent the change.value? */
-    const newValue = isAllTags ? undefined : value;
+    let newValue;
+    if (isMulti) {
+      newValue = change.map((el) => el.name).length ? change.map((el) => el.name) : undefined;
+    } else {
+      newValue = isAllTags ? undefined : [value];
+    }
+
     setQuery(
       {
         ...allQueryParams,
@@ -210,10 +219,17 @@ export const TagFilterPickerAutocomplete = ({
     );
   };
 
+  let selectedOptionMulti;
+  if (isMulti && typeof queryParamSelectedItem !== 'object') {
+    selectedOptionMulti = tagOptions.filter((option) =>
+      queryParamSelectedItem.includes(option.name),
+    );
+  }
   const [selectedOption] = tagOptions.filter((option) => option.name === queryParamSelectedItem);
 
   return (
     <Select
+      isMulti={isMulti}
       onChange={handleTagChange}
       classNamePrefix="react-select"
       getOptionLabel={getLabel}
@@ -221,7 +237,7 @@ export const TagFilterPickerAutocomplete = ({
       autoFocus={true}
       placeholder={allQueryParams[fieldsetName] || fieldsetTitle}
       options={tagOptions}
-      value={selectedOption || null}
+      value={isMulti ? selectedOptionMulti : selectedOption || null}
       isClearable={true}
     />
   );

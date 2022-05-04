@@ -41,10 +41,12 @@ export const MoreFiltersForm = (props) => {
     campaign: campaignInQuery,
     organisation: orgInQuery,
     location: countryInQuery,
+    interests: interestsInQuery,
   } = formQuery;
   const [campaignAPIState] = useTagAPI([], 'campaigns');
   const [orgAPIState] = useTagAPI([], 'organisations');
   const [countriesAPIState] = useTagAPI([], 'countries', formatFilterCountriesData);
+  const [interestsAPIState] = useTagAPI([], 'interests');
 
   const [mappingTypesInQuery, setMappingTypes] = useQueryParam('types', CommaArrayParam);
   const [exactTypes, setExactTypes] = useQueryParam('exactTypes', BooleanParam);
@@ -103,6 +105,17 @@ export const MoreFiltersForm = (props) => {
         titleStyle={titleStyle}
         selectedTag={countryInQuery}
         options={countriesAPIState}
+        setQueryForChild={setFormQuery}
+        allQueryParamsForChild={formQuery}
+      />
+
+      <ProjectFilterSelect
+        isMulti={true}
+        fieldsetName="interests"
+        fieldsetStyle={`${fieldsetStyle} mt3`}
+        titleStyle={titleStyle}
+        selectedTag={interestsInQuery}
+        options={interestsAPIState}
         setQueryForChild={setFormQuery}
         allQueryParamsForChild={formQuery}
       />

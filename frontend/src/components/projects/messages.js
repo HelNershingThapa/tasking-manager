@@ -20,6 +20,10 @@ export default defineMessages({
     id: 'project.nav.campaign',
     defaultMessage: 'Campaign',
   },
+  interests: {
+    id: 'project.nav.interests',
+    defaultMessage: 'Interests',
+  },
   startDate: {
     id: 'navFilters.startDate',
     defaultMessage: 'From',
